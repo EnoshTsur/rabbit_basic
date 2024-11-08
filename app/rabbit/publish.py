@@ -27,19 +27,6 @@ def publish_log(message: str):
             durable=True
         )
 
-        # Whenever we connect to Rabbit we need a fresh, empty queue.
-        # To do it we could create a queue with a random name, or, even better -
-        # let the server choose a random queue name for us.
-        # We can do this by supplying empty queue parameter to queue_declare:
-        # once the consumer connection is closed, the queue should be deleted.
-        # There's an exclusive flag for that:
-        result = channel.queue_declare(queue='',exclusive=True)
-
-        # We've already created a fanout exchange and a queue.
-        # Now we need to tell the exchange to send messages to our queue.
-        # That relationship between exchange and a queue is called a binding.
-        channel.queue_bind(exchange=LOGS_EXCHANGE, queue=result.method.queue)
-
         # Publish the message
         channel.basic_publish(
             exchange=LOGS_EXCHANGE,
