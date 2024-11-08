@@ -5,8 +5,5 @@ RABBIT_PASSWORD = '1234'
 # vhost
 RABBIT_VHOST = 'enosh_host'
 
-#queues
+# queues
 ENOSH_QUEUE = 'enosh_queue'
-
-#exchane
-LOG_TOPIC_EXCHANGE = 'log_topic_exchange'

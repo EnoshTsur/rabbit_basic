@@ -1,6 +1,5 @@
 from app.rabbit.channel import create_channel
-from app.rabbit.exchange import LogLevel
-from app.settings.config import ENOSH_QUEUE, LOG_TOPIC_EXCHANGE
+from app.settings.config import ENOSH_QUEUE
 
 
 def publish_message(message: str):
@@ -15,36 +14,3 @@ def publish_message(message: str):
         )
 
         print(f" [x] Sent message: {message}")
-
-
-def publish_log(message: str, log_level: LogLevel):
-    with create_channel() as channel:
-        channel.exchange_declare(
-            exchange=LOG_TOPIC_EXCHANGE,
-            exchange_type='topic',
-            durable=True
-        )
-
-        # Declare the queue
-        channel.queue_declare(
-            queue=ENOSH_QUEUE,
-            durable=True
-        )
-
-        # Bind queue to exchange with routing patterns
-        # This ensures the queue receives messages for all log patterns
-        for pattern in ["log.info", "log.error", "log.all"]:
-            channel.queue_bind(
-                queue=ENOSH_QUEUE,
-                exchange=LOG_TOPIC_EXCHANGE,
-                routing_key=pattern
-            )
-
-        # Publish the message
-        channel.basic_publish(
-            exchange=LOG_TOPIC_EXCHANGE,
-            routing_key=log_level.value,
-            body=message.encode()
-        )
-
-        print(f" [x] Sent {log_level.value}: {message}")

@@ -1,5 +1,4 @@
-from app.rabbit.exchange import LogLevel
-from app.rabbit.publish import publish_log
+from app.rabbit.publish import publish_message
 
 if __name__ == '__main__':
-    publish_log("Hello enosh!", LogLevel.INFO)
+    publish_message("Hello enosh!")
