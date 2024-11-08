@@ -7,3 +7,6 @@ RABBIT_VHOST = 'enosh_host'
 
 #queues
 ENOSH_QUEUE = 'enosh_queue'
+
+#exchange
+LOGS_EXCHANGE = 'logs'
