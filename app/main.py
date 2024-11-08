@@ -1,22 +1,21 @@
-from pika import PlainCredentials, BlockingConnection
-from pika.adapters.blocking_connection import BlockingChannel
-from pika.connection import ConnectionParameters
-import toolz as t
+from app.rabbit.channel import create_channel
+from app.settings.config import ENOSH_QUEUE
 
-connection: BlockingConnection = t.pipe(
-    PlainCredentials("guest", "guest"),
-    lambda credentials: ConnectionParameters(credentials=credentials),
-    BlockingConnection
-)
 
-channel = connection.channel()
+def publish_message(message: str):
+    with create_channel() as channel:
+        # Declare the queue (idempotent - will only create if doesn't exist)
+        channel.queue_declare(queue=ENOSH_QUEUE, durable=True)
 
-queue_name = "pika_queue"
+        # Publish the message
+        channel.basic_publish(
+            exchange='',  # Empty exchange for direct queue publishing
+            routing_key=ENOSH_QUEUE,
+            body=message.encode()
+        )
 
-def consume_messages(channel: BlockingChannel, method, props, body):
-    print(body)
-    channel.basic_ack(method.delivery_tag)
+        print(f" [x] Sent message: {message}")
+
 
 if __name__ == '__main__':
-    channel.basic_consume(queue_name, consume_messages)
-    channel.start_consuming()
+    publish_message("Hello enosh!")
