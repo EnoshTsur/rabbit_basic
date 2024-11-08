@@ -1,30 +1,13 @@
-from pika import PlainCredentials, BlockingConnection
-from pika.adapters.blocking_connection import BlockingChannel
-from pika.connection import ConnectionParameters
-import toolz as t
 import sys
-
-connection: BlockingConnection = t.pipe(
-    PlainCredentials("enosh", "1234"),
-    lambda credentials: ConnectionParameters(
-        credentials=credentials,
-        virtual_host="enosh_host"
-    ),
-    BlockingConnection
-)
-
-channel = connection.channel()
-
-queue_name = "enosh_queue"
-
-def consume_messages(channel: BlockingChannel, method, props, body):
-    print(body)
-    channel.basic_ack(method.delivery_tag)
+from app.rabbit.channel import create_channel
+from app.rabbit.consume import consume_messages
+from app.settings.config import ENOSH_QUEUE
 
 if __name__ == '__main__':
     try:
-        channel.basic_consume(queue_name, consume_messages)
-        channel.start_consuming()
+        with create_channel() as channel:
+            channel.basic_consume(ENOSH_QUEUE, consume_messages)
+            channel.start_consuming()
     except KeyboardInterrupt:
         print('Interrupted')
         sys.exit(0)
