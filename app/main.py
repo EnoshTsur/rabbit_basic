@@ -4,14 +4,17 @@ from pika.connection import ConnectionParameters
 import toolz as t
 
 connection: BlockingConnection = t.pipe(
-    PlainCredentials("guest", "guest"),
-    lambda credentials: ConnectionParameters(credentials=credentials),
+    PlainCredentials("enosh", "1234"),
+    lambda credentials: ConnectionParameters(
+        credentials=credentials,
+        virtual_host="enosh_host"
+    ),
     BlockingConnection
 )
 
 channel = connection.channel()
 
-queue_name = "pika_queue"
+queue_name = "enosh_queue"
 
 def consume_messages(channel: BlockingChannel, method, props, body):
     print(body)
