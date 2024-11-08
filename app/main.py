@@ -1,7 +1,7 @@
 import sys
 from app.rabbit.channel import create_channel
 from app.rabbit.consume import consume_messages
-from app.settings.config import ENOSH_QUEUE, LOGS_EXCHANGE
+from app.settings.config import LOGS_EXCHANGE
 
 if __name__ == '__main__':
     try:
