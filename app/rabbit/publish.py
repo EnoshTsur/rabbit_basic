@@ -18,20 +18,19 @@ def publish_message(message: str):
 
 def publish_log(message: str):
     with create_channel() as channel:
-        # The fanout exchange is very simple. As you can probably guess from the name,
-        # it just broadcasts all the messages it receives to all the queues it knows.
-        # And that's exactly what we need for our logger.
+        # Declare a fanout exchange
         channel.exchange_declare(
-            exchange=LOGS_EXCHANGE,
-            exchange_type='fanout',
-            durable=True
+            exchange=LOGS_EXCHANGE,  # Exchange name
+            exchange_type='fanout',  # Type of exchange
+            durable=True  # Ensures exchange is durable
         )
 
-        # Publish the message
+        # Publish the message to the fanout exchange
         channel.basic_publish(
-            exchange=LOGS_EXCHANGE,
-            routing_key='',
-            body=message.encode()
+            exchange=LOGS_EXCHANGE,  # Publish to the fanout exchange
+            routing_key='',  # Routing key is ignored for fanout
+            body=message.encode()  # Encode the message to bytes
         )
 
+        # Log confirmation
         print(f" [x] Sent: {message}")
