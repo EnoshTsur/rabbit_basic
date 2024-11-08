@@ -1,5 +1,5 @@
 from app.rabbit.channel import create_channel
-from app.settings.config import ENOSH_QUEUE, LOG_TOPIC_EXCHANGE
+from app.settings.config import ENOSH_QUEUE, LOGS_EXCHANGE
 
 
 def publish_message(message: str):
@@ -22,7 +22,7 @@ def publish_log(message: str):
         # it just broadcasts all the messages it receives to all the queues it knows.
         # And that's exactly what we need for our logger.
         channel.exchange_declare(
-            exchange=LOG_TOPIC_EXCHANGE,
+            exchange=LOGS_EXCHANGE,
             exchange_type='fanout',
             durable=True
         )
@@ -38,11 +38,11 @@ def publish_log(message: str):
         # We've already created a fanout exchange and a queue.
         # Now we need to tell the exchange to send messages to our queue.
         # That relationship between exchange and a queue is called a binding.
-        channel.queue_bind(exchange=LOG_TOPIC_EXCHANGE, queue=result.method.queue)
+        channel.queue_bind(exchange=LOGS_EXCHANGE, queue=result.method.queue)
 
         # Publish the message
         channel.basic_publish(
-            exchange=LOG_TOPIC_EXCHANGE,
+            exchange=LOGS_EXCHANGE,
             routing_key='',
             body=message.encode()
         )

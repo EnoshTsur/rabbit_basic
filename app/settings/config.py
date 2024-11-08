@@ -9,4 +9,4 @@ RABBIT_VHOST = 'enosh_host'
 ENOSH_QUEUE = 'enosh_queue'
 
 #exchane
-LOG_TOPIC_EXCHANGE = 'logs'
+LOGS_EXCHANGE = 'logs'
