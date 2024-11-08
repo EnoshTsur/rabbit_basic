@@ -31,7 +31,7 @@ if __name__ == '__main__':
             channel.basic_consume(
                 queue=queue_name,
                 on_message_callback=consume_messages,
-                auto_ack=True  # Automatically acknowledge the message
+                auto_ack=False  # Automatically acknowledge the message
             )
 
             # Start listening for messages
