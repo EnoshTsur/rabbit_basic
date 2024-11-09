@@ -1,4 +1,4 @@
-from app.rabbit.publish import publish_log
+from app.rabbit.publish import publish_direct
 
 if __name__ == '__main__':
-    publish_log("Hello logs!")
+    publish_direct("Hello logs!")

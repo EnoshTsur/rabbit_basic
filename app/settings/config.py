@@ -7,6 +7,10 @@ RABBIT_VHOST = 'enosh_host'
 
 #queues
 ENOSH_QUEUE = 'enosh_queue'
+DIRECT_QUEUE = 'direct_bind'
+
+#routing keys
+ROUTING_KEY = 'demonstrate'
 
 #exchane
-LOGS_EXCHANGE = 'logs'
+DIRECT_EXCHANGE = 'amq.direct'

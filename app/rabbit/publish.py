@@ -1,5 +1,5 @@
 from app.rabbit.channel import create_channel
-from app.settings.config import ENOSH_QUEUE, LOGS_EXCHANGE
+from app.settings.config import ENOSH_QUEUE, DIRECT_EXCHANGE, DIRECT_QUEUE, ROUTING_KEY
 
 
 def publish_message(message: str):
@@ -16,19 +16,29 @@ def publish_message(message: str):
         print(f" [x] Sent message: {message}")
 
 
-def publish_log(message: str):
+def publish_direct(message: str):
     with create_channel() as channel:
-        # Declare a fanout exchange
+        # Declare a direct exchange
         channel.exchange_declare(
-            exchange=LOGS_EXCHANGE,  # Exchange name
-            exchange_type='fanout',  # Type of exchange
-            durable=True  # Ensures exchange is durable
+            exchange=DIRECT_EXCHANGE,  # Exchange name
+            exchange_type='direct',  # Type of exchange
+            durable=True  # Make the exchange persistent
         )
 
-        # Publish the message to the fanout exchange
+        # Declare a durable queue
+        channel.queue_declare(queue=DIRECT_QUEUE, durable=True)
+
+        # Bind the queue to the exchange with a routing key
+        channel.queue_bind(
+            queue=DIRECT_QUEUE,  # Queue name
+            exchange=DIRECT_EXCHANGE,  # Exchange name
+            routing_key=ROUTING_KEY  # Routing key for direct routing
+        )
+
+        # Publish the message to the direct exchange
         channel.basic_publish(
-            exchange=LOGS_EXCHANGE,  # Publish to the fanout exchange
-            routing_key='',  # Routing key is ignored for fanout
+            exchange=DIRECT_EXCHANGE,  # Publish to the direct exchange
+            routing_key=ROUTING_KEY,  # Routing key for routing
             body=message.encode()  # Encode the message to bytes
         )
 
