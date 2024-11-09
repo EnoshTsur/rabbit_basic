@@ -1,7 +1,7 @@
 import sys
 from app.rabbit.channel import create_channel
 from app.rabbit.consume import consume_messages
-from app.settings.config import TOPIC_EXCHANGE, LOG_INFO_ROUTING_KEY
+from app.settings.config import TOPIC_EXCHANGE, LOG_INFO_ROUTING_KEY, LOG_INFO_QUEUE
 
 if __name__ == '__main__':
     try:
@@ -14,21 +14,20 @@ if __name__ == '__main__':
             )
 
             # Declare a queue (let RabbitMQ generate a unique name)
-            result = channel.queue_declare(queue='', durable=True)
-            queue_name = result.method.queue
+            channel.queue_declare(queue=LOG_INFO_QUEUE, durable=True)
 
             # Bind the queue to the direct exchange
             channel.queue_bind(
                 exchange=TOPIC_EXCHANGE,
-                queue=queue_name,
+                queue=LOG_INFO_QUEUE,
                 routing_key=LOG_INFO_ROUTING_KEY
             )
 
-            print(f" [*] Waiting for logs in queue: {queue_name}.")
+            print(f" [*] Waiting for logs in queue: {LOG_INFO_QUEUE}.")
 
             # Consume messages from the queue
             channel.basic_consume(
-                queue=queue_name,
+                queue=LOG_INFO_QUEUE,
                 on_message_callback=consume_messages,
                 auto_ack=False  # Automatically acknowledge the message
             )

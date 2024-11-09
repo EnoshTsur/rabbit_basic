@@ -8,6 +8,7 @@ RABBIT_VHOST = 'enosh_host'
 #queues
 ENOSH_QUEUE = 'enosh_queue'
 DIRECT_QUEUE = 'direct_bind'
+LOG_INFO_QUEUE = 'log_info_queue'
 
 #routing keys
 ROUTING_KEY = 'demonstrate'
