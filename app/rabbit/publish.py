@@ -5,7 +5,6 @@ from app.settings.config import ENOSH_QUEUE, DIRECT_EXCHANGE, DIRECT_QUEUE, ROUT
 
 def publish_message(message: str):
     with create_channel() as channel:
-        # Declare the queue (idempotent - will only create if doesn't exist)
         channel.queue_declare(queue=ENOSH_QUEUE, durable=True)
         # Publish the message
         channel.basic_publish(
