@@ -26,7 +26,14 @@ def publish_direct(message: str):
         )
 
         # Declare a durable queue
-        channel.queue_declare(queue=DIRECT_QUEUE, durable=True)
+        channel.queue_declare(
+            queue=DIRECT_QUEUE,
+            durable=True,
+            arguments={
+                "x-max-length": 1000,  # Limit the queue to 1000 messages
+                "x-message-ttl": 60000  # Messages expire after 60,000 ms (1 minute)
+            }
+        )
 
         # Bind the queue to the exchange with a routing key
         channel.queue_bind(
